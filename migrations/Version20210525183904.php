@@ -25,14 +25,11 @@ final class Version20210525183904 extends AbstractMigration
             birth_date DATETIME NOT NULL, 
             can_it_fly SMALLINT NOT NULL DEFAULT 0, 
             cage_id INT DEFAULT NULL, 
-            chat_token VARCHAR(255) NOT NULL, 
             INDEX IDX_6AAB231F5A70E5B7 (cage_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE cage (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE caretaker (
             id INT AUTO_INCREMENT NOT NULL, 
             name VARCHAR(255) NOT NULL, 
-            chat_token VARCHAR(255) DEFAULT NULL,
-            chat_id VARCHAR(255) DEFAULT NULL, 
             PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE caretaker_animal (caretaker_id INT NOT NULL, animal_id INT NOT NULL, INDEX IDX_764EB79E3F070B8B (caretaker_id), INDEX IDX_764EB79E8E962C16 (animal_id), PRIMARY KEY(caretaker_id, animal_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
 //        $this->addSql('CREATE TABLE animal_caretaker (animal_id INT NOT NULL, caretaker_id INT NOT NULL, INDEX IDX_764EB79E3F070B81 (caretaker_id), INDEX IDX_764EB79E8E962C11 (animal_id), PRIMARY KEY(animal_id, caretaker_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
