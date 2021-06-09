@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Welcome to our FunnyZoo™{% endblock %}
+
+{% block body %}
+
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="hero">Welcome to our FunnyZoo™</h1>
+            <p class="lead">Today you'll meet our all fascinating animals,<br>and we'll introduce our team to you.</p>
+        </div>
+    </div>
+    <div class="container">
+        <h3 class="text-center">Visitor's area</h3>
+        <div class="row">
+            <div class="col-4">
+                {{ include('_partials/main-card.twig.html', {'url': path('animal_index')  , 'title': 'See our animals', 'subtitle': 'Every one is very special!'}) }}
+            </div>
+            <div class="col-4">
+                {{ include('_partials/main-card.twig.html', {'url': path('caretaker_index')  , 'title': 'Meet our team', 'subtitle': 'They are proffesionals!'}) }}
+            </div>
+            <div class="col-4">
+                {{ include('_partials/main-card.twig.html', {'url': path('cage_index')  , 'title': 'Visit cages', 'subtitle': 'Apartments for animals!'}) }}
+            </div>
+        </div>
+
+        <h3 class="text-center" style="margin-top: 50px">Manager's area</h3>
+        <div class="row ">
+            <div class="col-12 text-center">
+                <a href="{{ path('caretaker_manage') }}" class="btn btn-sm btn-primary">Manage Caretakers</a>
+                <a href="{{ path('cage_manage') }}" class="btn btn-sm btn-primary">Manage Cages</a>
+                <a href="{{ path('animal_manage') }}" class="btn btn-sm btn-primary">Manage Animals</a>
+{#                <h5>or...</h5>#}
+{#                <a href="{{ path('chat_index') }}" class="btn btn-sm btn-primary">CHAT</a>#}
+            </div>
+        </div>
+
+
+    </div>
+{% endblock %}

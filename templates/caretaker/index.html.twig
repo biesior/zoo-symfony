@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Caretakers | {{ zoo_titlename }}{% endblock %}
+
+{% block body %}
+
+    {{ include('_partials/jumbo.html.twig', {'header1': 'Our team', 'subheader': '<i>"We scare, cause we care!"</i>'}) }}
+
+    <div class="container">
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('index') }}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Caretakers</li>
+            </ol>
+        </nav>
+
+        <div class="row">
+
+            {% for caretaker in caretakers %}
+                <div class="col-sm-12 margin-bottom-20">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title" title="Caretaker's ID:{{ caretaker.id }}"><a href="{{ path('caretaker_show', {'id': caretaker.id}) }}">{{ caretaker.name }}</a></h3>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+
+
+        <a href="{{ path('caretaker_manage') }}" class="btn btn-secondary btn-sm">Manage caretakers</a>
+
+    </div>
+{% endblock %}

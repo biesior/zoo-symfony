@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Animal | {{ zoo_titlename }}{% endblock %}
+
+{% block body %}
+    {{ include('_partials/jumbo.html.twig', {'header1': 'Edit animal\'s details', 'subheader': 'if you want to add some nice words about it'}) }}
+    <div class="container">
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('index') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('animal_index') }}">Animals</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('animal_manage') }}">Manage</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ animal.name }}</li>
+            </ol>
+        </nav>
+
+        {{ include('animal/_form.html.twig', {'button_label': 'Update'}) }}
+        <br><br>
+        <a href="{{ path('animal_manage') }}" class="btn btn-secondary btn-sm">Manage other animals</a>
+        <a href="{{ path('animal_index') }}" class="btn btn-secondary btn-sm">Back to preview</a>
+        {{ include('animal/_delete_form.html.twig') }}
+    </div>
+{% endblock %}

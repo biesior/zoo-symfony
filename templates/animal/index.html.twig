@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Our wonderful animals | {{ zoo_titlename }}{% endblock %}
+    {% block body %}
+        {{ include('_partials/jumbo.html.twig', {'header1': 'Our wonderful animals', 'subheader': 'All animals in our ZOO, meet all of them'}) }}
+
+        <div class="container">
+
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('index') }}">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Animals</li>
+                </ol>
+            </nav>
+
+
+            <div class="row">
+                {% for animal in animals %}
+                <div class="col-sm-6 margin-bottom-20">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title" title="Animal's ID:{{ animal.id }}">{{ animal.name }}</h3>
+                            <h5>{{ animal.description|raw }}</h5>
+
+
+                            <a href="{{ path('animal_show', {'id': animal.id}) }}" class="btn btn-primary btn-sm">Visit it now</a>
+                        </div>
+                    </div>
+                </div>
+                    {% if loop.index is divisible by(2) %}
+                        </div>
+                        <div class="row">
+                    {% endif %}
+                {% endfor %}
+
+            </div>
+        </div>
+        <div class="container">
+            <a href="{{ path('animal_manage') }}" class="btn btn-secondary btn-sm">Manage animals</a>
+        </div>
+    {% endblock %}

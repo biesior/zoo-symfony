@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Manage | Cages | {{ zoo_titlename }}{% endblock %}
+
+{% block body %}
+    {{ include('_partials/jumbo.html.twig', {'header1': 'All cages in our ZOO', 'subheader': 'They are modern and comfortable.'}) }}
+
+    <div class="container">
+
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('index') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('cage_index') }}">Cages</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Manage</li>
+            </ol>
+        </nav>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for cage in cages %}
+                <tr>
+                    <td>{{ cage.id }}</td>
+                    <td>{{ cage.name }}</td>
+                    <td>
+                        <a href="{{ path('cage_show', {'id': cage.id}) }}">show</a>
+                        <a href="{{ path('cage_edit', {'id': cage.id}) }}">edit</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3">no records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+
+        <a href="{{ path('cage_index') }}" class="btn btn-secondary btn-sm">Back to preview</a>
+        <a href="{{ path('cage_new') }}" class="btn btn-success btn-sm">Build new cage</a>
+
+    </div>
+{% endblock %}

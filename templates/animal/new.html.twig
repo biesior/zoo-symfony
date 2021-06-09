@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Animal | {{ zoo_titlename }}{% endblock %}
+
+{% block body %}
+    {{ include('_partials/jumbo.html.twig', {'header1': 'Introduce a new animal to the ZOO', 'subheader': 'every creature is more than welcome here'}) }}
+    <div class="container">
+        {{ include('animal/_form.html.twig') }}
+        <br><br>
+        <a href="{{ path('animal_manage') }}" class="btn btn-secondary btn-sm">Manage other animals</a>
+        <a href="{{ path('animal_index') }}" class="btn btn-secondary btn-sm">Back to preview</a>
+    </div>
+{% endblock %}

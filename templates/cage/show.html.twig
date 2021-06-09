@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ cage.name }} | Cages | {{ zoo_titlename }}{% endblock %}
+
+{% block body %}
+    {{ include('_partials/jumbo.html.twig', {'header1': cage.name, 'subheader': 'Nice place to live' }) }}
+
+    <div class="container">
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('index') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{  path('cage_index') }}">Cages</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ cage.name }}</li>
+            </ol>
+        </nav>
+
+        {% if cage.animals is empty %}
+            <b>There are no animals in this cage yet.</b>
+        {% else %}
+            <h6 class="card-subtitle mb-2 text-muted">AnimalsInside™:</h6>
+            <p class="card-text">
+                {% for animal in cage.animals %}
+                    <a href="{{ path('animal_show', {'id': animal.id}) }}" class="btn btn-sm btn-primary">{{ animal.name }}</a>
+                {% endfor %}
+            </p>
+        {% endif %}
+
+
+
+        <a href="{{ path('cage_index') }}" class="btn btn-sm btn-secondary">Back to preview</a>
+    </div>
+
+{% endblock %}

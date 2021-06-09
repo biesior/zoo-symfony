@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Animal's manager | {{ zoo_titlename }}{% endblock %}
+    {% block body %}
+        {{ include('_partials/jumbo.html.twig', {'header1': 'Manage animals', 'subheader': 'Here you can, add, edit and delete our sweet creatures'}) }}
+
+        <div class="container">
+
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('index') }}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('animal_index') }}">Animals</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Manage</li>
+                </ol>
+            </nav>
+
+            <table class="table table-striped table-bordered" >
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Caretakers</th>
+                    <th>Legs</th>
+                    <th>Date of birth</th>
+                    <th>Can it fly?</th>
+                    <th>Cage</th>
+                    <th>actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for animal in animals %}
+                    <tr>
+                        <td>{{ animal.id }}</td>
+                        <td><b>{{ animal.name }}</b><br>{{ animal.description|raw }}</td>
+                        <td>
+                            {% if animal.caretakers is empty %}
+                                <i class="text-muted">no caretaker</i>
+                            {% else %}
+                                {% for caretaker in animal.caretakers %}
+                                    {{ caretaker }}{% if not loop.last %},{% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </td>
+                        <td>{{ animal.legs }}</td>
+                        <td>{{ animal.birthDate ? animal.birthDate|date('d.m.Y') : '' }}</td>
+                        <td>{{ (animal.canItFly) ? '✅' : '❎'}}</td>
+                        <td>{{ animal.cage }}</td>
+                        <td>
+                            <a href="{{ path('animal_show', {'id': animal.id}) }}">show</a>
+                            <a href="{{ path('animal_edit', {'id': animal.id}) }}">edit</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6">no records found</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <a href="{{ path('animal_index') }}" class="btn btn-secondary btn-sm">Back to preview</a>
+            <a href="{{ path('animal_new') }}" class="btn btn-success btn-sm">Add new animal</a>
+        </div>
+    {% endblock %}

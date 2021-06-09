@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Manage caretakers | {{ zoo_titlename }}{% endblock %}
+
+{% block body %}
+
+    {{ include('_partials/jumbo.html.twig', {'header1': 'Our team', 'subheader': '<i>"We scare, cause we care!"</i>'}) }}
+
+    <div class="container">
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('index') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('caretaker_index') }}">Caretakers</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Manage</li>
+            </ol>
+        </nav>
+
+        <table class="table table-striped table-bordered">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for caretaker in caretakers %}
+                <tr>
+                    <td>{{ caretaker.id }}</td>
+                    <td>{{ caretaker.name }}</td>
+                    <td>
+                        <a href="{{ path('caretaker_show', {'id': caretaker.id}) }}">show</a>
+                        <a href="{{ path('caretaker_edit', {'id': caretaker.id}) }}">edit</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3">no records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ path('caretaker_index') }}" class="btn btn-secondary btn-sm">Back to preview</a>
+        <a href="{{ path('caretaker_new') }}" class="btn btn-success btn-sm">Hire new caretaker</a>
+    </div>
+{% endblock %}

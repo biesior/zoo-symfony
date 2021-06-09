@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Caretaker | {{ zoo_titlename }}{% endblock %}
+
+{% block body %}
+    {{ include('_partials/jumbo.html.twig', {'header1': 'Edit caretaker\'s details' , 'subheader': 'Because of RODO, GIODO, and any other *ODO we use only first name of the caretaker'}) }}
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('index') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('caretaker_index') }}">Caretakers</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('caretaker_manage') }}">Manage</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ caretaker.name }}</li>
+            </ol>
+        </nav>
+
+        {{ include('caretaker/_form.html.twig', {'button_label': 'Update'}) }}
+        <br><br>
+
+        <a href="{{ path('caretaker_manage') }}" class="btn btn-secondary btn-sm">Manage other caretaker</a>
+        <a href="{{ path('caretaker_index') }}" class="btn btn-secondary btn-sm">Back to preview</a>
+
+        {{ include('caretaker/_delete_form.html.twig') }}
+    </div>
+{% endblock %}
