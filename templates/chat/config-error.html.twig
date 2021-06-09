@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Config error | Chat | {{ zoo_titlename }}{% endblock %}
+
+{% block body %}
+
+    {{ include('_partials/jumbo.html.twig', {'header1': 'API config is invalid', 'subheader': 'Ooops. An error occured!'}) }}
+
+    <div class="container">
+
+        The API configuration is invalid, please check <code>services.yaml</code> and input proper data <a href="{{ path('chat_index') }}" class="btn btn-secondary btn-sm">and try again</a>
+
+    </div>
+{% endblock %}

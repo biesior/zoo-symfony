@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Choose the person to talk | Chat | {{ zoo_titlename }}{% endblock %}
+
+{% block body %}
+
+    {{ include('_partials/jumbo.html.twig', {'header1': 'Select the character', 'subheader': 'You can chat as a selected caretaker'}) }}
+
+    <div class="container">
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('index') }}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Caretakers</li>
+            </ol>
+        </nav>
+
+
+        {% for caretaker in caretakers %}
+            <a href="{{ path('chat_caretaker', {'id': caretaker.id}) }}" class="btn btn-primary btn-sm" title="Caretaker's ID:{{ caretaker.id }}">{{ caretaker.name }}</a>
+        {% endfor %}
+
+
+    </div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Now you can talk | Chat | {{ zoo_titlename }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+
+{% endblock %}
+
+
+{% block body %}
+
+    {{ include('_partials/jumbo.html.twig', {'header1': 'Chat with our guys', 'subheader': 'You can chat as a selected caretaker  '}) }}
+    <div class="container">
+            <div id="chat-messages" class="align-bottom" style="overflow: auto; margin-bottom: 20px;"></div>
+        <div id="chat-box">
+            <input id="chat-box-input" class="form-control" placeholder="Input the message and press return to send"/>
+            <br>
+            <span class="text-secondary">You're posting as <b>{{ chatUserName }}</b></span> <a href="{{ path('chat_logout') }}" class="btn btn-sm btn-secondary">Logout</a>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block footerscripts %}
+    <script src="{{ asset('js/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('js/chatter/chatter.js') }}"></script>
+{% endblock %}

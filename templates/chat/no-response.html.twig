@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}API server didn't response | Chat | {{ zoo_titlename }}{% endblock %}
+
+{% block body %}
+
+    {{ include('_partials/jumbo.html.twig', {'header1': 'The API server is not responding', 'subheader': 'Ooops. An error occured!'}) }}
+
+    <div class="container">
+
+        Please make sure, that API server is running, is configured properly and <a href="{{ path('chat_index') }}" class="btn btn-secondary btn-sm">try again later</a>
+
+    </div>
+{% endblock %}
