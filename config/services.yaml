@@ -4,12 +4,12 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    chat_api_default:
+    chat_api:
         admin_id: null
         admin_token: null
         host: 'http://localhost'
         port: 3000
-    chat_api:
+    chat_api_dev_sample:
         admin_token: 'rDCAID0x-jnKhiticF3m6kmlRy25mVA729rC5upGIBq'
         admin_id: 'mLXK2HcnReutJ7rnn'
         host: 'http://localhost'
