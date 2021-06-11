@@ -20,6 +20,7 @@
             <thead>
             <tr>
                 <th>Id</th>
+                <th>Slug</th>
                 <th>Name</th>
                 <th>actions</th>
             </tr>
@@ -28,10 +29,11 @@
             {% for cage in cages %}
                 <tr>
                     <td>{{ cage.id }}</td>
+                    <td>{{ cage.slug }}</td>
                     <td>{{ cage.name }}</td>
                     <td>
-                        <a href="{{ path('cage_show', {'id': cage.id}) }}">show</a>
-                        <a href="{{ path('cage_edit', {'id': cage.id}) }}">edit</a>
+                        <a href="{{ path('cage_show', {'slug': cage.slug}) }}">show</a>
+                        <a href="{{ path('cage_edit', {'slug': cage.slug}) }}">edit</a>
                     </td>
                 </tr>
             {% else %}

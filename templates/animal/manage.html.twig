@@ -46,8 +46,8 @@
                         <td>{{ (animal.canItFly) ? '✅' : '❎'}}</td>
                         <td>{{ animal.cage }}</td>
                         <td>
-                            <a href="{{ path('animal_show', {'id': animal.id}) }}">show</a>
-                            <a href="{{ path('animal_edit', {'id': animal.id}) }}">edit</a>
+                            <a href="{{ path('animal_show', {'slug': animal.slug}) }}">show</a>
+                            <a href="{{ path('animal_edit', {'slug': animal.slug}) }}">edit</a>
                         </td>
                     </tr>
                 {% else %}

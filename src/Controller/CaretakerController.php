@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 /**
  * @Route("/caretaker")
@@ -20,8 +21,25 @@ class CaretakerController extends AbstractController
      */
     public function index(CaretakerRepository $caretakerRepository): Response
     {
+        $slugger = new AsciiSlugger();
+        $requireFlush = false;
+        $caretakers = $caretakerRepository->findBy([], ['name' => 'ASC']);
+
+        foreach ($caretakers as $caretaker) {
+            if (empty($caretaker->getSlug())) {
+                $caretaker->setSlug(
+                    $slugger->slug($caretaker->getName())->folded()
+                );
+                $requireFlush = true;
+            }
+        }
+
+        if ($requireFlush) {
+            $this->getDoctrine()->getManager()->flush();
+        }
+
         return $this->render('caretaker/index.html.twig', [
-            'caretakers' => $caretakerRepository->findBy([], ['name' => 'ASC']),
+            'caretakers' => $caretakers,
         ]);
     }
 
@@ -45,6 +63,8 @@ class CaretakerController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $slugger = new AsciiSlugger();
+            $caretaker->setSlug($slugger->slug($caretaker->getName())->folded());
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($caretaker);
             $entityManager->flush();
@@ -59,24 +79,28 @@ class CaretakerController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="caretaker_show", methods={"GET"})
+     * @Route("/{slug}", name="caretaker_show", methods={"GET"})
      */
-    public function show(Caretaker $caretaker): Response
+    public function show(string $slug, CaretakerRepository $caretakerRepository): Response
     {
+        $caretaker = $caretakerRepository->findOneBy(['slug' => $slug]);
         return $this->render('caretaker/show.html.twig', [
             'caretaker' => $caretaker,
         ]);
     }
 
     /**
-     * @Route("/{id}/edit", name="caretaker_edit", methods={"GET","POST"})
+     * @Route("/{slug}/edit", name="caretaker_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Caretaker $caretaker): Response
+    public function edit(Request $request, string $slug, CaretakerRepository $caretakerRepository): Response
     {
+        $caretaker = $caretakerRepository->findOneBy(['slug' => $slug]);
         $form = $this->createForm(CaretakerType::class, $caretaker);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $slugger = new AsciiSlugger();
+            $caretaker->setSlug($slugger->slug($caretaker->getName())->folded());
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('caretaker_index');
@@ -89,10 +113,11 @@ class CaretakerController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="caretaker_delete", methods={"POST"})
+     * @Route("/{slug}", name="caretaker_delete", methods={"POST"})
      */
-    public function delete(Request $request, Caretaker $caretaker): Response
+    public function delete(Request $request, string $slug, CaretakerRepository $caretakerRepository): Response
     {
+        $caretaker = $caretakerRepository->findOneBy(['slug' => $slug]);
         if ($this->isCsrfTokenValid('delete' . $caretaker->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($caretaker);

@@ -24,7 +24,7 @@
             {% if animal.cage is empty %}
                 <span class="text-muted">It is homeless ;(</span>
             {% else %}
-                <b>Lives in:</b> <a href="{{ path('cage_show',{'id': animal.cage.id}) }}">{{ animal.cage }}</a>
+                <b>Lives in:</b> <a href="{{ path('cage_show',{'slug': animal.cage.slug}) }}">{{ animal.cage }}</a>
             {% endif %}
 
             {% if animal.caretakers is empty %}
@@ -32,7 +32,7 @@
             {% else %}
                 <br>Its caretaker(s):
                 {% for caretaker in animal.caretakers %}
-                    <a href="{{ path('caretaker_show', {'id': caretaker.id}) }}">{{ caretaker }}</a>{% if not loop.last %},{% endif %}
+                    <a href="{{ path('caretaker_show', {'slug': caretaker.slug}) }}">{{ caretaker }}</a>{% if not loop.last %},{% endif %}
                 {% endfor %}
             {% endif %}
         </p>

@@ -30,8 +30,8 @@
                     <td>{{ caretaker.id }}</td>
                     <td>{{ caretaker.name }}</td>
                     <td>
-                        <a href="{{ path('caretaker_show', {'id': caretaker.id}) }}">show</a>
-                        <a href="{{ path('caretaker_edit', {'id': caretaker.id}) }}">edit</a>
+                        <a href="{{ path('caretaker_show', {'slug': caretaker.slug}) }}">show</a>
+                        <a href="{{ path('caretaker_edit', {'slug': caretaker.slug}) }}">edit</a>
                     </td>
                 </tr>
             {% else %}

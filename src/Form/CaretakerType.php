@@ -13,8 +13,11 @@ class CaretakerType extends AbstractType
     {
         $builder
             ->add('name')
-//            ->add('animals')
-        ;
+            ->add('slug', null, [
+                'required' => true,
+                'label'    => 'Slug',
+                'attr'     => ['placeholder' => 'Please enter unique slug, required']
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

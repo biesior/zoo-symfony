@@ -17,14 +17,14 @@
         {% for cage in cages %}
             <div class="card margin-bottom-20">
                 <div class="card-body">
-                    <h5 class="card-title"><a href="{{ path('cage_show', {'id': cage.id}) }}">{{ cage.name }}</a></h5>
+                    <h5 class="card-title"><a href="{{ path('cage_show', {'slug': cage.slug}) }}">{{ cage.name }}</a></h5>
                     {% if cage.animals is empty %}
                         <b>There are no animals in this cage yet.</b>
                     {% else %}
                         <h6 class="card-subtitle mb-2 text-muted">AnimalsInside™:</h6>
                         <p class="card-text">
                             {% for animal in cage.animals %}
-                                <a href="{{ path('animal_show', {'id': animal.id}) }}" class="btn btn-sm btn-primary">{{ animal.name }}</a>
+                                <a href="{{ path('animal_show', {'slug': animal.slug}) }}" class="btn btn-sm btn-primary">{{ animal.name }}</a>
                             {% endfor %}
                         </p>
                     {% endif %}

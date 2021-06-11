@@ -23,7 +23,7 @@
                             <h5>{{ animal.description|raw }}</h5>
 
 
-                            <a href="{{ path('animal_show', {'id': animal.id}) }}" class="btn btn-primary btn-sm">Visit it now</a>
+                            <a href="{{ path('animal_show', {'slug': animal.slug}) }}" class="btn btn-primary btn-sm">Visit it now</a>
                         </div>
                     </div>
                 </div>

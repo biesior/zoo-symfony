@@ -19,7 +19,7 @@
             <h3>All animals the {{ caretaker }}'s carrying on:</h3>
 
             {% for animal in caretaker.animals %}
-                <a href="{{ path('animal_show', {'id': animal.id}) }}" class="btn btn-success">{{ animal.name }}</a>
+                <a href="{{ path('animal_show', {'slug': animal.slug}) }}" class="btn btn-success">{{ animal.name }}</a>
             {% endfor %}
 
         {% else %}

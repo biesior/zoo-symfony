@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 /**
  * @Route("/animal")
@@ -22,8 +23,25 @@ class AnimalController extends AbstractController
      */
     public function index(AnimalRepository $animalRepository): Response
     {
+        $animals = $animalRepository->findAll();
+        $slugger = new AsciiSlugger();
+        $requireFlush = false;
+        foreach ($animals as $animal) {
+            if (empty($animal->getSlug())) {
+                $animal->setSlug(
+                    $slugger->slug($animal->getName())->folded()
+                );
+                $requireFlush = true;
+            }
+        }
+
+        if ($requireFlush) {
+            $this->getDoctrine()->getManager()->flush();
+        }
+
+
         return $this->render('animal/index.html.twig', [
-            'animals' => $animalRepository->findAll(),
+            'animals' => $animals,
         ]);
     }
 
@@ -47,6 +65,8 @@ class AnimalController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $slugger = new AsciiSlugger();
+            $animal->setSlug($slugger->slug($animal->getSlug())->folded());
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($animal);
             $entityManager->flush();
@@ -98,19 +118,19 @@ class AnimalController extends AbstractController
 //        return $this->json($animalRepository->completeJsonData());
         $response = new Response(null);
 
-        $response->setContent( $this->render('animal/index.html.twig', [
+        $response->setContent($this->render('animal/index.html.twig', [
             'animals' => $animalRepository->findAll(),
-        ])->getContent());
-//            ->setExpires($date)
+        ])->getContent());//            ->setExpires($date)
         ;
         return $response;
     }
 
     /**
-     * @Route("/{id}", name="animal_show", methods={"GET"})
+     * @Route("/{slug}", name="animal_show", methods={"GET"})
      */
-    public function show(Animal $animal): Response
+    public function show(string $slug, AnimalRepository $animalRepository): Response
     {
+        $animal = $animalRepository->findOneBy(['slug' => $slug]);
         return $this->render('animal/show.html.twig', [
             'animal' => $animal,
         ]);
@@ -118,14 +138,17 @@ class AnimalController extends AbstractController
 
 
     /**
-     * @Route("/{id}/edit", name="animal_edit", methods={"GET","POST"})
+     * @Route("/{slug}/edit", name="animal_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Animal $animal, CaretakerRepository $caretakerRepository): Response
+    public function edit(Request $request, string $slug, AnimalRepository $animalRepository, CaretakerRepository $caretakerRepository): Response
     {
+        $animal = $animalRepository->findOneBy(['slug' => $slug]);
         $form = $this->createForm(AnimalType::class, $animal);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $slugger = new AsciiSlugger();
+            $animal->setSlug($slugger->slug($animal->getSlug())->folded());
             $objectManager = $this->getDoctrine()->getManager();
 
 //            $curCaretakers = $animal->getCaretakers();
@@ -153,10 +176,11 @@ class AnimalController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="animal_delete", methods={"POST"})
+     * @Route("/{slug}", name="animal_delete", methods={"POST"})
      */
-    public function delete(Request $request, Animal $animal): Response
+    public function delete(Request $request, string $slug, AnimalRepository $animalRepository): Response
     {
+        $animal = $animalRepository->findOneBy(['slug' => $slug]);
         if ($this->isCsrfTokenValid('delete' . $animal->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($animal);

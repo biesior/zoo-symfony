@@ -22,11 +22,16 @@ class AnimalType extends AbstractType
                 'label'    => 'Animal\'s name',
                 'attr'     => ['placeholder' => 'Common name of the animal, required']
             ])
+            ->add('slug', null, [
+                'required' => true,
+                'label'    => 'Slug',
+                'attr'     => ['placeholder' => 'Please enter unique slug, required']
+            ])
             ->add('description', TextareaType::class, [
-                'attr'     => ['placeholder' => 'Add short description of the animal)']
+                'attr' => ['placeholder' => 'Add short description of the animal)']
             ])
             ->add('legs', IntegerType::class, [
-                'attr'     => ['placeholder' => 'Number of legs between 0 and 100 (aliens with thousands of legs are not allowed)']
+                'attr' => ['placeholder' => 'Number of legs between 0 and 100 (aliens with thousands of legs are not allowed)']
             ])
             ->add('birthDate')
             ->add('canItFly', CheckboxType::class, [

@@ -17,7 +17,7 @@
 
 
         {% for caretaker in caretakers %}
-            <a href="{{ path('chat_caretaker', {'id': caretaker.id}) }}" class="btn btn-primary btn-sm" title="Caretaker's ID:{{ caretaker.id }}">{{ caretaker.name }}</a>
+            <a href="{{ path('chat_caretaker', {'slug': caretaker.slug}) }}" class="btn btn-primary btn-sm" title="Caretaker's ID:{{ caretaker.id }}">{{ caretaker.name }}</a>
         {% endfor %}
 
 
