@@ -29,8 +29,8 @@
 
         </div>
 
-
-        <a href="{{ path('caretaker_manage') }}" class="btn btn-secondary btn-sm">Manage caretakers</a>
-
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('caretaker_manage') }}" class="btn btn-secondary btn-sm">Manage caretakers</a>
+        {% endif %}
     </div>
 {% endblock %}

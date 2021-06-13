@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\AsciiSlugger;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/cage")
@@ -44,6 +45,7 @@ class CageController extends AbstractController
 
     /**
      * @Route("/manage", name="cage_manage", methods={"GET"})
+     * @IsGranted("ROLE_ADMIN")
      */
     public function manage(CageRepository $cageRepository): Response
     {
@@ -54,6 +56,7 @@ class CageController extends AbstractController
 
     /**
      * @Route("/new", name="cage_new", methods={"GET","POST"})
+     * @IsGranted("ROLE_ADMIN")
      */
     public function new(Request $request): Response
     {
@@ -91,6 +94,7 @@ class CageController extends AbstractController
 
     /**
      * @Route("/{slug}/edit", name="cage_edit", methods={"GET","POST"})
+     * @IsGranted("ROLE_ADMIN")
      */
     public function edit(Request $request, string $slug, CageRepository $cageRepository): Response
     {
@@ -114,6 +118,7 @@ class CageController extends AbstractController
 
     /**
      * @Route("/{id}", name="cage_delete", methods={"POST"})
+     * @IsGranted("ROLE_ADMIN")
      */
     public function delete(Request $request, string $slug, CageRepository $cageRepository): Response
     {
