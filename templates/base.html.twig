@@ -24,6 +24,13 @@
 <footer class="footer">
     <div class="container">
         <span class="text-muted">© Copyleft {{ zoo_titlename }} {{ copy_since }}-{{ "now"|date("Y") }}</span>
+
+        {% if is_granted('ROLE_USER') %}
+            Logged as: {{ app.user.username }}
+            <a href="{{ path('app_logout') }}" class="btn btn-sm btn-light">Logout</a>
+        {% else %}
+            <a href="{{ path('app_login') }}" class="btn btn-sm btn-light">Login now</a>
+        {% endif %}
     </div>
 </footer>
 

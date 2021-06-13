@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/cage")
@@ -24,8 +25,10 @@ class CageController extends AbstractController
             'cages' => $cageRepository->findAll(),
         ]);
     }
+
     /**
      * @Route("/manage", name="cage_manage", methods={"GET"})
+     * @IsGranted("ROLE_ADMIN")
      */
     public function manage(CageRepository $cageRepository): Response
     {
@@ -36,6 +39,7 @@ class CageController extends AbstractController
 
     /**
      * @Route("/new", name="cage_new", methods={"GET","POST"})
+     * @IsGranted("ROLE_ADMIN")
      */
     public function new(Request $request): Response
     {
@@ -69,6 +73,7 @@ class CageController extends AbstractController
 
     /**
      * @Route("/{id}/edit", name="cage_edit", methods={"GET","POST"})
+     * @IsGranted("ROLE_ADMIN")
      */
     public function edit(Request $request, Cage $cage): Response
     {
@@ -89,10 +94,11 @@ class CageController extends AbstractController
 
     /**
      * @Route("/{id}", name="cage_delete", methods={"POST"})
+     * @IsGranted("ROLE_ADMIN")
      */
     public function delete(Request $request, Cage $cage): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$cage->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $cage->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($cage);
             $entityManager->flush();

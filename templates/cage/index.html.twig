@@ -34,10 +34,10 @@
             <h1>There are no cages yet, go to cage manager below.</h1>
         {% endfor %}
 
-
-        <div class="container">
-            <a href="{{ path('cage_manage') }}" class="btn btn-secondary btn-sm">Manage cages</a>
-        </div>
-
+        {% if is_granted('ROLE_ADMIN') %}
+            <div class="container">
+                <a href="{{ path('cage_manage') }}" class="btn btn-secondary btn-sm">Manage cages</a>
+            </div>
+        {% endif %}
     </div>
 {% endblock %}
