@@ -3,19 +3,32 @@
 namespace App\Controller;
 
 use App\Entity\Caretaker;
+use App\Form\CaretakerNewType;
 use App\Form\CaretakerType;
 use App\Repository\CaretakerRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @Route("/caretaker")
  */
 class CaretakerController extends AbstractController
 {
+
+
+    private UserPasswordEncoderInterface $passwordEncoder;
+
+
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    {
+        $this->passwordEncoder = $passwordEncoder;
+    }
+
     /**
      * @Route("/", name="caretaker_index", methods={"GET"})
      */
@@ -44,15 +57,19 @@ class CaretakerController extends AbstractController
     public function new(Request $request): Response
     {
         $caretaker = new Caretaker();
-        $form = $this->createForm(CaretakerType::class, $caretaker);
+        $form = $this->createForm(CaretakerNewType::class, $caretaker);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $newPass = $form->get('newPassword')->getData();
+            if (!empty($newPass)) {
+                $caretaker->setPassword($this->passwordEncoder->encodePassword($caretaker, $newPass));
+            }
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($caretaker);
             $entityManager->flush();
 
-            return $this->redirectToRoute('caretaker_index');
+            return $this->redirectToRoute('caretaker_manage');
         }
 
         return $this->render('caretaker/new.html.twig', [
@@ -81,9 +98,14 @@ class CaretakerController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $newPass = $form->get('newPassword')->getData();
 
-            return $this->redirectToRoute('caretaker_index');
+            if (!empty($newPass)) {
+                $caretaker->setPassword($this->passwordEncoder->encodePassword($caretaker, $newPass));
+            }
+
+            $this->getDoctrine()->getManager()->flush();
+            return $this->redirectToRoute('caretaker_manage');
         }
 
         return $this->render('caretaker/edit.html.twig', [
@@ -104,6 +126,6 @@ class CaretakerController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('caretaker_index');
+        return $this->redirectToRoute('caretaker_manage');
     }
 }

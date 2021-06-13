@@ -9,7 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class CaretakerType extends AbstractType
+class CaretakerNewType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -18,7 +18,7 @@ class CaretakerType extends AbstractType
             ->add('username')
             ->add('newPassword', RepeatedType::class, [
                 'mapped'          => false,
-                'required'        => false,
+                'required'        => true,
                 'type'            => PasswordType::class,
                 'invalid_message' => 'The password fields must match.',
                 'first_options'   => ['label' => 'New password'],
