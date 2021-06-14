@@ -20,7 +20,7 @@
             <thead>
             <tr>
                 <th>Id</th>
-                <th>Name</th>
+                <th>Name & userame</th>
                 <th>actions</th>
             </tr>
             </thead>
@@ -28,7 +28,7 @@
             {% for caretaker in caretakers %}
                 <tr>
                     <td>{{ caretaker.id }}</td>
-                    <td>{{ caretaker.name }}</td>
+                    <td><b>{{ caretaker.name }}</b><br>{{ caretaker.username }}</td>
                     <td>
                         <a href="{{ path('caretaker_show', {'slug': caretaker.slug}) }}">show</a>
                         <a href="{{ path('caretaker_edit', {'slug': caretaker.slug}) }}">edit</a>

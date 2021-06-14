@@ -4,7 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Caretaker;
 use App\Repository\CaretakerRepository;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Exception\EnvNotFoundException;
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\HttpClient\CurlHttpClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,6 +25,7 @@ class ChatController extends AbstractController
     const API_PORT = '3000';
     const CHANEL_ID = '#general';
     const CHAT_AUTH_DATA_NAME = 'chatAuthData';
+    private $chatApiErrorKind = null;
 
     private SessionInterface $session;
     private string $adminAuthToken;
@@ -45,9 +49,19 @@ class ChatController extends AbstractController
         return $host;
     }
 
+
     private function initApiConfig(): bool
     {
-        $cfg = $this->getParameter('chat_api');
+        $this->chatApiErrorKind = null;
+        $cfg = null;
+        try {
+            $cfg = $this->getParameter('chat_api');
+        } catch (EnvNotFoundException $e) {
+            $this->chatApiErrorKind = 'no-env';
+        } catch (InvalidArgumentException $e) {
+            $this->chatApiErrorKind = 'no-cfg';
+        }
+//        $cfg = $this->getParameter('chat_api');
         if (is_null($cfg) || !is_array($cfg)) {
             return false;
         }
@@ -68,18 +82,18 @@ class ChatController extends AbstractController
 
     /**
      * @Route("/", name="chat_index", methods={"GET"})
+     * @IsGranted("ROLE_USER")
      */
     public function index(): Response
     {
-        if (!$this->initApiConfig()) return $this->redirectToRoute('chat_config_error');
+        if (!$this->initApiConfig()) return $this->redirectToRoute('chat_config_error_spec', ['kind' => $this->chatApiErrorKind]);
         if ($this->pingApiServer() == 408) return $this->redirectToRoute('chat_noresponse');
-
-
-//        die();
 
         $tokenData = $this->getToken();
         if (!is_array($tokenData)) {
-            return $this->redirectToRoute('chat_select');
+            /** @var Caretaker $logged */
+            $logged = $this->getUser();
+            return $this->redirectToRoute('chat_caretaker', ['slug' => $logged->getSlug()]);
         }
 
         return $this->render('chat/index.html.twig', [
@@ -93,6 +107,16 @@ class ChatController extends AbstractController
     public function configError(): Response
     {
         return $this->render('chat/config-error.html.twig');
+    }
+
+    /**
+     * @Route("/config-error/{kind}", name="chat_config_error_spec", methods={"GET"})
+     */
+    public function configErrorSpecified(string $kind): Response
+    {
+        return $this->render('chat/config-error.html.twig', [
+            'errorKind' => $kind
+        ]);
     }
 
     /**
@@ -125,8 +149,6 @@ class ChatController extends AbstractController
      */
     public function select(CaretakerRepository $caretakerRepository): Response
     {
-
-
         $this->deleteAuthSession();
         return $this->render('chat/select.html.twig', [
             'caretakers' => $caretakerRepository->findAll(),
@@ -220,8 +242,6 @@ class ChatController extends AbstractController
             $resDelete = $client->request('POST', $this->getApiHost() . '/api/v1/chat.delete',
                 [
                     'headers' => [
-//                        'X-Auth-Token' => self::ADMIN_AUTH_TOKEN,
-//                        'X-User-Id'    => self::ADMIN_AUTH_USER_ID,
                         'X-Auth-Token' => $this->adminAuthToken,
                         'X-User-Id'    => $this->adminId,
                         'Content-type' => 'application/json',
@@ -287,18 +307,26 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @Route("/for/caretaker/{id}", name="chat_caretaker", methods={"GET"})
+     * @Route("/for/caretaker/{slug}", name="chat_caretaker", methods={"GET"})
+     * @IsGranted("ROLE_USER")
      */
-    public function chatCaretaker(int $id, CaretakerRepository $caretakerRepository): Response
+    public function chatCaretaker(string $slug, CaretakerRepository $caretakerRepository): Response
     {
 
-        if (!$this->initApiConfig()) return $this->redirectToRoute('chat_config_error');
+        if (!$this->initApiConfig()) return $this->redirectToRoute('chat_config_error_spec', ['kind' => $this->chatApiErrorKind]);
         if ($this->pingApiServer() == 408) return $this->redirectToRoute('chat_noresponse');
 
-        $caretaker = $caretakerRepository->find($id);
+        $caretaker = $caretakerRepository->findOneBy(['slug' => $slug]);
+
+
         if (is_null($caretaker)) {
             return $this->redirectToRoute('chat_select');
         } else {
+            /** @var Caretaker $logged */
+            $logged = $this->getUser();
+            if ($slug != $logged->getSlug()) {
+                $caretaker = $caretakerRepository->findOneBy(['slug' => $logged->getSlug()]);
+            }
             $userName = 'caretaker_' . $caretaker->getId();
 
             // Check if user exists
@@ -308,14 +336,17 @@ class ChatController extends AbstractController
             $res = $client->request('GET', $url,
                 [
                     'headers' => [
-//                        'X-Auth-Token' => self::ADMIN_AUTH_TOKEN,
-//                        'X-User-Id'    => self::ADMIN_AUTH_USER_ID,
                         'X-Auth-Token' => $this->adminAuthToken,
                         'X-User-Id'    => $this->adminId,
                         'Content-type' => 'application/json',
                     ],
                 ]
             );
+
+            $code = $res->getStatusCode();
+            if ($code == 401) {
+                return $this->redirectToRoute('chat_config_error_spec', ['kind' => 'no-auth']);
+            }
 
             $data = json_decode($res->getContent(), true);
             $userId = null;
@@ -324,8 +355,6 @@ class ChatController extends AbstractController
                 $res2 = $client->request('POST', $this->getApiHost() . '/api/v1/users.create',
                     [
                         'headers' => [
-//                            'X-Auth-Token' => self::ADMIN_AUTH_TOKEN,
-//                            'X-User-Id'    => self::ADMIN_AUTH_USER_ID,
                             'X-Auth-Token' => $this->adminAuthToken,
                             'X-User-Id'    => $this->adminId,
                             'Content-type' => 'application/json',
@@ -352,8 +381,6 @@ class ChatController extends AbstractController
             $resToken = $client->request('POST', $this->getApiHost() . '/api/v1/users.createToken',
                 [
                     'headers' => [
-//                        'X-Auth-Token' => self::ADMIN_AUTH_TOKEN,
-//                        'X-User-Id'    => self::ADMIN_AUTH_USER_ID,
                         'X-Auth-Token' => $this->adminAuthToken,
                         'X-User-Id'    => $this->adminId,
                         'Content-type' => 'application/json',

@@ -24,15 +24,22 @@
             </div>
         </div>
 
-        {% if is_granted('ROLE_USER') %}
+        {% if is_granted('ROLE_ADMIN') %}
             <h3 class="text-center" style="margin-top: 50px">Manager's area</h3>
             <div class="row ">
                 <div class="col-12 text-center">
                     <a href="{{ path('caretaker_manage') }}" class="btn btn-sm btn-primary">Manage Caretakers</a>
                     <a href="{{ path('cage_manage') }}" class="btn btn-sm btn-primary">Manage Cages</a>
                     <a href="{{ path('animal_manage') }}" class="btn btn-sm btn-primary">Manage Animals</a>
-                    <h5>or...</h5>
                     <a href="{{ path('chat_index') }}" class="btn btn-sm btn-primary">CHAT</a>
+                </div>
+            </div>
+        {% endif %}
+        {% if is_granted('ROLE_USER') %}
+            <h3 class="text-center" >you can also chat</h3>
+            <div class="row ">
+                <div class="col-12 text-center">
+                    <a href="{{ path('chat_caretaker', {'slug': app.user.slug}) }}" class="btn btn-sm btn-primary">Chat now</a>
                 </div>
             </div>
         {% endif %}

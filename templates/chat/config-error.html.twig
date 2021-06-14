@@ -7,8 +7,32 @@
     {{ include('_partials/jumbo.html.twig', {'header1': 'API config is invalid', 'subheader': 'Ooops. An error occured!'}) }}
 
     <div class="container">
+        {% if errorKind=='no-cfg' %}
+            Looks like there is missing <code>chat_api</code> section, please check <code>services.yaml</code> and input proper data
+        {% elseif errorKind=='no-env' or errorKind=='no-auth' %}
+            Looks like there are missing admin's credentials, please log in to your Rocket.Chat instance with admin's privileges, generatae Personal Access Token and set it via CLI, using these commands:
+            <br><br>
+            <div class="code-block">
+                <code>
+                    php bin/console secrets:set CHAT_ADMIN_ID --local
+                </code>
+            </div>
+            <div class="code-block">
+                <code>
+                    php bin/console secrets:set CHAT_ADMIN_TOKEN --local
+                </code>
+            </div>
+            <br>
+        {% elseif errorKind=='no-env' or errorKind=='nana-chat' %}
+            <h3>Na na na!</h3>
+            You're bad boy! Trying to chat as someone else. <br><br>
+            This incident will be reported (if funds will allow to add reporting to this project :D). Please do not try this again...
+        {% else %}
+            The API configuration is invalid
+        {% endif %}
 
-        The API configuration is invalid, please check <code>services.yaml</code> and input proper data <a href="{{ path('chat_index') }}" class="btn btn-secondary btn-sm">and try again</a>
+        <a href="{{ path('chat_index') }}" class="btn btn-secondary btn-sm">and try again</a>
+
 
     </div>
 {% endblock %}

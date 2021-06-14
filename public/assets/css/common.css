@@ -57,3 +57,7 @@ body {
     width: 100% !important;
     margin-bottom: 10px;
 }
+
+.vertical-align-inherit {
+    vertical-align: inherit;
+}

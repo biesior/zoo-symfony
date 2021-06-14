@@ -6,18 +6,24 @@
 parameters:
     # to allow creating users' accounts for our Caretakers without need of doing it in RC GUI
     # Please create (or reuse) admin's account and add Personal Access Token, then put these data below
+    # DO NOT STORE CREDENTIALS HERE DIRECTLY ANYMORE!
+    # Note these credentials should be stored in the Vault
+    # https://symfony.com/doc/5.2/configuration/secrets.html
+    # Also for dev/test purposes override them with --local flag (dev env only)
+    # Sample:
+    # php bin/console secrets:set CHAT_ADMIN_ID --local
+    # php bin/console secrets:set CHAT_ADMIN_TOKEN --local
     chat_api:
-        admin_id: null
-        admin_token: null
+        admin_id: '%env(CHAT_ADMIN_ID)%'
+        admin_token: '%env(CHAT_ADMIN_TOKEN)%'
         host: 'http://localhost'
         port: 3000
 
-    # Below config is sample, it is not used anywhere.
-    chat_api_dev_sample:
-        admin_token: 'rDCAID0x-jnKhiticF3m6kmlRy25mVA729rC5upGIBq'
-        admin_id: 'mLXK2HcnReutJ7rnn'
-        host: 'http://localhost'
-        port: 3000
+
+#    Please save your token carefully as you will no longer be able to view it afterwards.
+#Token: 10i_5su_OK_DmdbTqisbzL6iD9eXPLMwotL13BujVvm
+#Your user Id: WGEC2eTrDQLwhNeQg
+
 
 services:
     # default configuration for services in *this* file
