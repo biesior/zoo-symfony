@@ -36,6 +36,35 @@ class CaretakerRepository extends ServiceEntityRepository implements PasswordUpg
         $this->_em->flush();
     }
 
+    /**
+     * Counts all entities containing given slug, if $id is given, checkin this row will be skipped
+     *
+     * @param $slug
+     * @param $id
+     *
+     * @return int|mixed|string
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function countSlugsWithoutId($slug, $id = null)
+    {
+        $qb = $this->createQueryBuilder('t');
+        if (!is_null($id)) {
+            $qb->select('count(t.slug)')
+                ->where('t.slug = :slug AND t.id != :id')
+                ->setParameter('slug', $slug)
+                ->setParameter('id', $id);
+        } else {
+            $qb->select('count(t.slug)')
+                ->where('t.slug = :slug')
+                ->setParameter('slug', $slug);
+        }
+        $query = $qb->getQuery();
+
+        return $query->getSingleScalarResult();
+
+    }
+
     // /**
     //  * @return Caretaker[] Returns an array of Caretaker objects
     //  */

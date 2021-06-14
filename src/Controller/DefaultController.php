@@ -37,4 +37,13 @@ class DefaultController extends AbstractController
     {
         return new Response('hellou\' world!');
     }
+
+    /**
+     * @Route("/time", name="default_time")
+     */
+    public function time()
+    {
+        $time=new \DateTime();
+       return $this->json(['time'=> $time->format('d.m.Y H:i:s')]);
+    }
 }

@@ -72,7 +72,7 @@ class CaretakerController extends AbstractController
      * @Route("/new", name="caretaker_new", methods={"GET","POST"})
      * @IsGranted("ROLE_ADMIN")
      */
-    public function new(Request $request): Response
+    public function new(Request $request, CaretakerRepository $caretakerRepository): Response
     {
         $caretaker = new Caretaker();
         $form = $this->createForm(CaretakerNewType::class, $caretaker);
@@ -83,8 +83,14 @@ class CaretakerController extends AbstractController
             if (!empty($newPass)) {
                 $caretaker->setPassword($this->passwordEncoder->encodePassword($caretaker, $newPass));
             }
+
             $slugger = new AsciiSlugger();
-            $caretaker->setSlug($slugger->slug($caretaker->getName())->folded());
+            $newSlug = $this->resolveSlug(
+                $caretakerRepository,
+                $slugger->slug($caretaker->getName())->folded(),
+                $slugger);
+            $caretaker->setSlug($newSlug);
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($caretaker);
             $entityManager->flush();
@@ -109,6 +115,24 @@ class CaretakerController extends AbstractController
         ]);
     }
 
+    private function resolveSlug(CaretakerRepository $caretakerRepository, $proposedSlug, $slugger, $attempt = 0, $id = 0)
+    {
+        $trySlug = $proposedSlug;
+        if ($attempt > 0) {
+            $trySlug = $proposedSlug . '-' . $attempt;
+        }
+        $slugs = $caretakerRepository->countSlugsWithoutId($trySlug, $id);
+        $bp = 1;
+        if ($slugs > 0) {
+            $attempt++;
+            return $this->resolveSlug($caretakerRepository, $proposedSlug, $slugger, $attempt, $id);
+        } else {
+            return $trySlug;
+        }
+
+        return $proposedSlug;
+    }
+
     /**
      * @Route("/{slug}/edit", name="caretaker_edit", methods={"GET","POST"})
      * @IsGranted("ROLE_ADMIN")
@@ -127,9 +151,12 @@ class CaretakerController extends AbstractController
             }
 
             $slugger = new AsciiSlugger();
-            $caretaker->setSlug($slugger->slug($caretaker->getName())->folded());
+            $newSlug = $slugger->slug($caretaker->getSlug())->folded();
+            $finalSlug = $this->resolveSlug($caretakerRepository, $newSlug, $slugger, 0, $caretaker->getId());
+            $caretaker->setSlug($finalSlug);
             $this->getDoctrine()->getManager()->flush();
-            return $this->redirectToRoute('caretaker_manage');
+            return $this->redirectToRoute('caretaker_edit', ['slug' => $finalSlug]);
+//            return $this->redirectToRoute('caretaker_manage');
         }
 
         return $this->render('caretaker/edit.html.twig', [

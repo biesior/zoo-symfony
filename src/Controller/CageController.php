@@ -117,7 +117,7 @@ class CageController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="cage_delete", methods={"POST"})
+     * @Route("/{slug}", name="cage_delete", methods={"POST"})
      * @IsGranted("ROLE_ADMIN")
      */
     public function delete(Request $request, string $slug, CageRepository $cageRepository): Response
