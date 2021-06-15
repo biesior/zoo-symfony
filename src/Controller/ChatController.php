@@ -21,8 +21,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class ChatController extends AbstractController
 {
-    const API_HOST = 'http://localhost';
-    const API_PORT = '3000';
     const CHANEL_ID = '#general';
     const CHAT_AUTH_DATA_NAME = 'chatAuthData';
     private $chatApiErrorKind = null;
@@ -61,7 +59,6 @@ class ChatController extends AbstractController
         } catch (InvalidArgumentException $e) {
             $this->chatApiErrorKind = 'no-cfg';
         }
-//        $cfg = $this->getParameter('chat_api');
         if (is_null($cfg) || !is_array($cfg)) {
             return false;
         }
@@ -252,10 +249,9 @@ class ChatController extends AbstractController
                     ])
                 ]
             );
-//            var_dump($resDelete->getInfo());
         }
 
-        return new Response('foo');
+        return new Response('All messages deleted');
 
     }
 
