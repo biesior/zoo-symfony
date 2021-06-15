@@ -83,10 +83,8 @@ class CageController extends AbstractController
     /**
      * @Route("/{slug}", name="cage_show", methods={"GET"})
      */
-    public function show(string $slug, CageRepository $cageRepository): Response
+    public function show(Cage $cage): Response
     {
-        $cage = $cageRepository->findOneBy(['slug' => $slug]);
-
         return $this->render('cage/show.html.twig', [
             'cage' => $cage,
         ]);
@@ -96,9 +94,8 @@ class CageController extends AbstractController
      * @Route("/{slug}/edit", name="cage_edit", methods={"GET","POST"})
      * @IsGranted("ROLE_ADMIN")
      */
-    public function edit(Request $request, string $slug, CageRepository $cageRepository): Response
+    public function edit(Request $request, Cage $cage): Response
     {
-        $cage = $cageRepository->findOneBy(['slug' => $slug]);
         $form = $this->createForm(CageType::class, $cage);
         $form->handleRequest($request);
 
@@ -120,9 +117,8 @@ class CageController extends AbstractController
      * @Route("/{slug}", name="cage_delete", methods={"POST"})
      * @IsGranted("ROLE_ADMIN")
      */
-    public function delete(Request $request, string $slug, CageRepository $cageRepository): Response
+    public function delete(Request $request, Cage $cage): Response
     {
-        $cage = $cageRepository->findOneBy(['slug' => $slug]);
         if ($this->isCsrfTokenValid('delete' . $cage->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($cage);

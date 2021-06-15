@@ -7,7 +7,6 @@ use App\Form\CaretakerNewType;
 use App\Form\CaretakerType;
 use App\Repository\CaretakerRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -107,9 +106,8 @@ class CaretakerController extends AbstractController
     /**
      * @Route("/{slug}", name="caretaker_show", methods={"GET"})
      */
-    public function show(string $slug, CaretakerRepository $caretakerRepository): Response
+    public function show(Caretaker $caretaker): Response
     {
-        $caretaker = $caretakerRepository->findOneBy(['slug' => $slug]);
         return $this->render('caretaker/show.html.twig', [
             'caretaker' => $caretaker,
         ]);
@@ -137,9 +135,8 @@ class CaretakerController extends AbstractController
      * @Route("/{slug}/edit", name="caretaker_edit", methods={"GET","POST"})
      * @IsGranted("ROLE_ADMIN")
      */
-    public function edit(Request $request, string $slug, CaretakerRepository $caretakerRepository): Response
+    public function edit(Request $request, Caretaker $caretaker, CaretakerRepository $caretakerRepository): Response
     {
-        $caretaker = $caretakerRepository->findOneBy(['slug' => $slug]);
         $form = $this->createForm(CaretakerType::class, $caretaker);
         $form->handleRequest($request);
 
@@ -169,9 +166,8 @@ class CaretakerController extends AbstractController
      * @Route("/{slug}", name="caretaker_delete", methods={"POST"})
      * @IsGranted("ROLE_ADMIN")
      */
-    public function delete(Request $request, string $slug, CaretakerRepository $caretakerRepository): Response
+    public function delete(Request $request, Caretaker $caretaker): Response
     {
-        $caretaker = $caretakerRepository->findOneBy(['slug' => $slug]);
         if ($this->isCsrfTokenValid('delete' . $caretaker->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($caretaker);

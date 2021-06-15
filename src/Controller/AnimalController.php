@@ -118,7 +118,6 @@ class AnimalController extends AbstractController
      */
     public function test(AnimalRepository $animalRepository): Response
     {
-//        return $this->json($animalRepository->completeJsonData());
         $response = new Response(null);
 
         $response->setContent($this->render('animal/index.html.twig', [
@@ -131,9 +130,8 @@ class AnimalController extends AbstractController
     /**
      * @Route("/{slug}", name="animal_show", methods={"GET"})
      */
-    public function show(string $slug, AnimalRepository $animalRepository): Response
+    public function show(Animal $animal): Response
     {
-        $animal = $animalRepository->findOneBy(['slug' => $slug]);
         return $this->render('animal/show.html.twig', [
             'animal' => $animal,
         ]);
@@ -144,9 +142,8 @@ class AnimalController extends AbstractController
      * @Route("/{slug}/edit", name="animal_edit", methods={"GET","POST"})
      * @IsGranted("ROLE_ADMIN")
      */
-    public function edit(Request $request, string $slug, AnimalRepository $animalRepository, CaretakerRepository $caretakerRepository): Response
+    public function edit(Request $request, Animal $animal): Response
     {
-        $animal = $animalRepository->findOneBy(['slug' => $slug]);
         $form = $this->createForm(AnimalType::class, $animal);
         $form->handleRequest($request);
 
@@ -155,19 +152,6 @@ class AnimalController extends AbstractController
             $animal->setSlug($slugger->slug($animal->getSlug())->folded());
             $objectManager = $this->getDoctrine()->getManager();
 
-//            $curCaretakers = $animal->getCaretakers();
-
-//            // todo: check if isn't it better way?
-//            foreach ($curCaretakers as $ctaker) {
-//                $ctaker->addAnimal($animal);
-//                $objectManager->persist($ctaker);
-//            }
-//            if (isset($_POST['animal']['caretakers'])) {
-//                foreach ($_POST['animal']['caretakers'] as $caretakerId) {
-//                    $animal->addCaretaker($caretakerRepository->find(intval($caretakerId)));
-//                }
-//            }
-//            $objectManager->persist($animal);
             $objectManager->flush();
 
             return $this->redirectToRoute('animal_index');
@@ -183,9 +167,8 @@ class AnimalController extends AbstractController
      * @Route("/{slug}", name="animal_delete", methods={"POST"})
      * @IsGranted("ROLE_ADMIN")
      */
-    public function delete(Request $request, string $slug, AnimalRepository $animalRepository): Response
+    public function delete(Request $request, Animal $animal): Response
     {
-        $animal = $animalRepository->findOneBy(['slug' => $slug]);
         if ($this->isCsrfTokenValid('delete' . $animal->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($animal);
