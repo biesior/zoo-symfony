@@ -16,6 +16,7 @@ class Caretaker implements UserInterface
 
     const ROLE_USER = 'ROLE_USER';
     const ROLE_ADMIN = 'ROLE_ADMIN';
+    const ROLE_VISITOR = 'ROLE_VISITOR';
 
     /**
      * @ORM\Id

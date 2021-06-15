@@ -4,6 +4,8 @@ namespace App\Form;
 
 use App\Entity\Caretaker;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\CallbackTransformer;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -21,6 +23,17 @@ class CaretakerType extends AbstractType
                 'label'    => 'Slug',
                 'attr'     => ['placeholder' => 'Please enter unique slug, required']
             ])
+            ->add('roles', ChoiceType::class, [
+                'required' => true,
+                'label'    => 'User roles',
+                'multiple' => true,
+                'expanded' => true,
+                'choices'  => [
+                    'User (always)' => Caretaker::ROLE_USER,
+                    'Admin'         => Caretaker::ROLE_ADMIN,
+                    'Visitor'       => Caretaker::ROLE_VISITOR,
+                ]
+            ])
             ->add('newPassword', RepeatedType::class, [
                 'mapped'          => false,
                 'required'        => false,
@@ -30,7 +43,9 @@ class CaretakerType extends AbstractType
                 'second_options'  => ['label' => 'Repeat Password'],
 
             ]);
+
     }
+
 
     public function configureOptions(OptionsResolver $resolver)
     {
