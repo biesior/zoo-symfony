@@ -43,7 +43,7 @@ class DefaultController extends AbstractController
      */
     public function time()
     {
-        $time=new \DateTime();
-       return $this->json(['time'=> $time->format('d.m.Y H:i:s')]);
+        $time = new \DateTime();
+        return $this->json(['time' => $time->format('d.m.Y H:i:s')]);
     }
 }

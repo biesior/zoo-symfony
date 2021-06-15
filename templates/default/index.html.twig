@@ -12,6 +12,9 @@
     </div>
     <div class="container">
         <h3 class="text-center">Visitor's area</h3>
+        {% if is_granted('ROLE_VISITOR') %}
+            <h1 class="text-center"style="margin: 20px 0;">As a special Visitor you're getting a free coffee at entrance!</h1>
+        {% endif %}
         <div class="row">
             <div class="col-4">
                 {{ include('_partials/main-card.twig.html', {'url': path('animal_index')  , 'title': 'See our animals', 'subtitle': 'Every one is very special!'}) }}
