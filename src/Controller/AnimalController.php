@@ -7,10 +7,17 @@ use App\Entity\Caretaker;
 use App\Form\AnimalType;
 use App\Repository\AnimalRepository;
 use App\Repository\CaretakerRepository;
+use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -85,30 +92,21 @@ class AnimalController extends AbstractController
 
 
     /**
-     * @Route("/api", name="animal_api", methods={"GET"})
+     * @Route("/api", name="animal_index_api", methods={"GET"})
      *
      * @deprecated This method is currently used only for dev purposes
      */
     public function apiIndex(AnimalRepository $animalRepository): Response
     {
-        $animals = [];
-        foreach ($animalRepository->findAll() as $animal) {
-            $sub = [
-                'id'          => $animal->getId(),
-                'name'        => $animal->getName(),
-                'description' => $animal->getDescription(),
-            ];
-            $careArr = [];
-            foreach ($animal->getCaretakers() as $caretaker) {
-                $careArr[] = [
-                    'id'   => $caretaker->getId(),
-                    'name' => $caretaker->getName(),
-                ];
-            }
-            $sub['caretakers'] = $careArr;
-            $animals[] = $sub;
-        }
-        return $this->json(['animals' => $animals]);
+        $serializer = SerializerBuilder::create()->build();
+        $response = new Response(
+            $serializer->serialize(
+                $animalRepository->findAll(),
+                'json',
+                SerializationContext::create()->setGroups(['animal_list'])
+            ));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 
     /**
@@ -124,6 +122,24 @@ class AnimalController extends AbstractController
             'animals' => $animalRepository->findAll(),
         ])->getContent());//            ->setExpires($date)
         ;
+        return $response;
+    }
+
+    /**
+     * @Route("/{slug}/api", name="animal_show_api", methods={"GET"})
+     */
+    public function apiShow(Animal $animal): Response
+    {
+
+        $serializer = SerializerBuilder::create()->build();
+        $response = new Response(
+            $serializer->serialize(
+                $animal,
+                'json',
+                SerializationContext::create()
+                    ->setGroups(['animal_list', 'caretaker_list'])
+            ));
+        $response->headers->set('Content-Type', 'application/json');
         return $response;
     }
 

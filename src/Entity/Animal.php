@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation\VirtualProperty;
 
 /**
  * @ORM\Entity(repositoryClass=AnimalRepository::class)
@@ -17,16 +19,26 @@ class Animal
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"animal_list"})
      */
     private $id;
 
     /**
+     * Transient property
+     *
+     * @Groups({"animal_list"})
+     */
+    private $uri;
+
+    /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"animal_list"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"animal_list"})
      */
     private $description;
 
@@ -38,6 +50,7 @@ class Animal
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"animal_list"})
      */
     private $birthDate;
 
@@ -54,6 +67,7 @@ class Animal
     /**
      * @ORM\ManyToMany(targetEntity=Caretaker::class, inversedBy="animals")
      * @ORM\JoinTable(name="caretaker_animal")
+     * @Groups({"animal_list"})
      */
     private $caretakers;
 
@@ -64,7 +78,6 @@ class Animal
 
     public function __construct()
     {
-
         $this->caretakers = new ArrayCollection();
     }
 

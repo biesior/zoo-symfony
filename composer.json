@@ -7,11 +7,13 @@
         "php": ">=7.2.5",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-json": "*",
         "composer/package-versions-deprecated": "1.11.99.2",
         "doctrine/annotations": "^1.0",
         "doctrine/doctrine-bundle": "^2.3",
         "doctrine/doctrine-migrations-bundle": "^3.1",
         "doctrine/orm": "^2.9",
+        "jms/serializer": "^3.12",
         "phpdocumentor/reflection-docblock": "^5.2",
         "sensio/framework-extra-bundle": "^5.1",
         "symfony/apache-pack": "^1.0",
@@ -33,7 +35,6 @@
         "symfony/property-info": "5.2.*",
         "symfony/proxy-manager-bridge": "5.2.*",
         "symfony/security-bundle": "5.2.*",
-        "symfony/serializer": "5.2.*",
         "symfony/string": "5.2.*",
         "symfony/translation": "5.2.*",
         "symfony/twig-bundle": "^5.2",
@@ -41,8 +42,7 @@
         "symfony/web-link": "5.2.*",
         "symfony/yaml": "5.2.*",
         "twig/extra-bundle": "^2.12|^3.0",
-        "twig/twig": "^2.12|^3.0",
-        "ext-json": "*"
+        "twig/twig": "^2.12|^3.0"
     },
     "require-dev": {
         "symfony/browser-kit": "^5.2",

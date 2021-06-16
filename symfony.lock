@@ -88,6 +88,12 @@
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.5"
     },
+    "jms/metadata": {
+        "version": "2.5.0"
+    },
+    "jms/serializer": {
+        "version": "3.12.3"
+    },
     "laminas/laminas-code": {
         "version": "4.3.0"
     },
@@ -114,6 +120,9 @@
     },
     "phpdocumentor/type-resolver": {
         "version": "1.4.0"
+    },
+    "phpstan/phpdoc-parser": {
+        "version": "0.5.5"
     },
     "psr/cache": {
         "version": "1.0.1"
@@ -432,9 +441,6 @@
         "version": "v5.2.8"
     },
     "symfony/security-http": {
-        "version": "v5.2.9"
-    },
-    "symfony/serializer": {
         "version": "v5.2.9"
     },
     "symfony/serializer-pack": {
