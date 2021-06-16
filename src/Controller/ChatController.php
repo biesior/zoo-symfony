@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Caretaker;
 use App\Repository\CaretakerRepository;
 
+use App\Service\GeneralUtility;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Exception\EnvNotFoundException;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
@@ -277,7 +278,7 @@ class ChatController extends AbstractController
 
 
         $client = new CurlHttpClient();
-        $client->request('POST', 'http://localhost:3000/api/v1/chat.postMessage',
+        $client->request('POST', $this->getApiHost() . '/api/v1/chat.postMessage',
             [
                 'headers' => [
                     'X-Auth-Token' => $tokenData['t'],
@@ -359,7 +360,7 @@ class ChatController extends AbstractController
                             'email'    => "{$userName}@zoo.fake",
                             'name'     => $caretaker->getName(),
                             'username' => $userName,
-                            'password' => self::generateRandomPass(),
+                            'password' => GeneralUtility::generateRandomPass(),
                         ])
                     ]
                 );
@@ -412,15 +413,4 @@ class ChatController extends AbstractController
         $this->session->set(self::CHAT_AUTH_DATA_NAME, null);
     }
 
-    private static function generateRandomPass($len = 32): string
-    {
-        $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
-        $pass = [];
-        $alphaLength = strlen($alphabet) - 1;
-        for ($i = 0; $i < $len; $i++) {
-            $n = rand(0, $alphaLength);
-            $pass[] = $alphabet[$n];
-        }
-        return implode($pass);
-    }
 }
